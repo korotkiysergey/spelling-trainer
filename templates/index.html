@@ -275,10 +275,20 @@
 
         .instruction {
             background: #e7f5ff;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             margin: 15px 0;
             border-left: 4px solid #667eea;
+            line-height: 1.6;
+        }
+
+        .instruction code {
+            background: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: bold;
         }
 
         .loading {
@@ -354,7 +364,8 @@
                 </div>
 
                 <div class="instruction" id="instruction-text">
-                    <strong>Инструкция:</strong> Введите русские слова (по одному на строку)
+                    <strong>Инструкция:</strong> Введите русские слова (по одному на строку).
+                    Система озвучит каждое слово, а вы должны правильно написать его.
                 </div>
 
                 <textarea id="words-textarea" placeholder="Введите слова здесь...">вокзал
@@ -444,16 +455,31 @@
             element.classList.add('selected');
             document.getElementById('mode-' + mode.replace('_', '-')).checked = true;
 
-            // Обновляем инструкцию
+            // Обновляем инструкцию и placeholder в зависимости от режима
             const instruction = document.getElementById('instruction-text');
             const textarea = document.getElementById('words-textarea');
 
             if (mode === 'ru_only') {
-                instruction.innerHTML = '<strong>Инструкция:</strong> Введите русские слова (по одному на строку)';
-                textarea.placeholder = 'вокзал\nпарашют\nаккомпанемент';
-            } else {
-                instruction.innerHTML = '<strong>Инструкция:</strong> Введите пары слов в формате: русское слово - английское слово';
+                instruction.innerHTML = '<strong>Инструкция:</strong> Введите русские слова (по одному на строку). Система озвучит каждое слово, а вы должны правильно написать его.';
+                textarea.placeholder = 'вокзал\nпарашют\nаккомпанемент\nбюллетень\nдеревня';
+                // Устанавливаем примеры слов для режима только русских слов
+                if (!textarea.value.trim() || textarea.value.includes('-')) {
+                    textarea.value = 'вокзал\nпарашют\nаккомпанемент\nбюллетень\nдеревня\nинтеллигент\nпрофессия\nколлектив\nтерритория\nдискуссия';
+                }
+            } else if (mode === 'ru_to_en') {
+                instruction.innerHTML = '<strong>Инструкция:</strong> Введите пары слов в формате: <code>русское слово - английское слово</code> (каждая пара на новой строке). Система озвучит русское слово, а вы должны написать его перевод на английском.';
                 textarea.placeholder = 'вокзал - station\nпарашют - parachute\nаккомпанемент - accompaniment';
+                // Устанавливаем примеры пар для режима русский-английский
+                if (!textarea.value.includes('-') || textarea.value.split('\n')[0].split('-').length === 1) {
+                    textarea.value = 'вокзал - station\nпарашют - parachute\nаккомпанемент - accompaniment\nбюллетень - bulletin\nдеревня - village\nинтеллигент - intellectual\nпрофессия - profession\nколлектив - collective\nтерритория - territory\nдискуссия - discussion';
+                }
+            } else { // en_to_ru
+                instruction.innerHTML = '<strong>Инструкция:</strong> Введите пары слов в формате: <code>русское слово - английское слово</code> (каждая пара на новой строке). Система озвучит английское слово, а вы должны написать его перевод на русском.';
+                textarea.placeholder = 'вокзал - station\nпарашют - parachute\nаккомпанемент - accompaniment';
+                // Устанавливаем примеры пар для режима английский-русский
+                if (!textarea.value.includes('-') || textarea.value.split('\n')[0].split('-').length === 1) {
+                    textarea.value = 'вокзал - station\nпарашют - parachute\nаккомпанемент - accompaniment\nбюллетень - bulletin\nдеревня - village\nинтеллигент - intellectual\nпрофессия - profession\nколлектив - collective\nтерритория - territory\nдискуссия - discussion';
+                }
             }
         }
 
