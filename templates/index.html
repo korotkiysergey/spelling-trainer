@@ -350,16 +350,16 @@
                 <div class="mode-selector">
                     <h3>Выберите режим тренировки:</h3>
                     <div class="mode-option selected" onclick="selectMode('ru_only', this)">
-                        <input type="radio" name="mode" value="ru_only" id="mode-ru" checked>
-                        <label for="mode-ru">📝 Только русские слова (слышу русское, пишу русское)</label>
+                        <input type="radio" name="mode" value="ru_only" id="mode-ru-only" checked>
+                        <label for="mode-ru-only">📝 Только русские слова (слышу русское, пишу русское)</label>
                     </div>
                     <div class="mode-option" onclick="selectMode('ru_to_en', this)">
-                        <input type="radio" name="mode" value="ru_to_en" id="mode-ru-en">
-                        <label for="mode-ru-en">🇷🇺→🇬🇧 Русский → Английский (слышу русское, пишу английское)</label>
+                        <input type="radio" name="mode" value="ru_to_en" id="mode-ru-to-en">
+                        <label for="mode-ru-to-en">🇷🇺→🇬🇧 Русский → Английский (слышу русское, пишу английское)</label>
                     </div>
                     <div class="mode-option" onclick="selectMode('en_to_ru', this)">
-                        <input type="radio" name="mode" value="en_to_ru" id="mode-en-ru">
-                        <label for="mode-en-ru">🇬🇧→🇷🇺 Английский → Русский (слышу английское, пишу русское)</label>
+                        <input type="radio" name="mode" value="en_to_ru" id="mode-en-to-ru">
+                        <label for="mode-en-to-ru">🇬🇧→🇷🇺 Английский → Русский (слышу английское, пишу русское)</label>
                     </div>
                 </div>
 
@@ -453,7 +453,13 @@
                 opt.classList.remove('selected');
             });
             element.classList.add('selected');
-            document.getElementById('mode-' + mode.replace('_', '-')).checked = true;
+
+            // Правильно формируем ID для radio button
+            const radioId = 'mode-' + mode.replace(/_/g, '-');
+            const radioElement = document.getElementById(radioId);
+            if (radioElement) {
+                radioElement.checked = true;
+            }
 
             // Обновляем инструкцию и placeholder в зависимости от режима
             const instruction = document.getElementById('instruction-text');
