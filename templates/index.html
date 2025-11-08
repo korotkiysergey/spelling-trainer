@@ -301,6 +301,120 @@
             display: block;
         }
 
+        .source-selector {
+            margin: 20px 0;
+        }
+
+        .database-selection, .manual-input {
+            margin: 20px 0;
+        }
+
+        .filter-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .filter-section h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .option-card {
+            padding: 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-card.selected {
+            border-color: #667eea;
+            background: #e7f5ff;
+        }
+
+        .option-card input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .letters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .letter-card {
+            padding: 12px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .letter-card:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .letter-card.selected {
+            border-color: #667eea;
+            background: #e7f5ff;
+            color: #667eea;
+        }
+
+        .letter-card .count {
+            font-size: 0.7em;
+            color: #6c757d;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .letter-selection-controls {
+            margin-bottom: 10px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .selected-info {
+            padding: 15px;
+            background: #d1ecf1;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .selected-info strong {
+            color: #667eea;
+            font-size: 1.3em;
+        }
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
@@ -347,6 +461,63 @@
             <div id="setup-section" class="section active">
                 <h2>⚙️ Настройка тренировки</h2>
 
+                <!-- Выбор источника слов -->
+                <div class="source-selector">
+                    <h3>Выберите источник слов:</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="db-source-btn" onclick="selectSource('database')">
+                            📚 Из базы данных
+                        </button>
+                        <button class="btn btn-secondary" id="manual-source-btn" onclick="selectSource('manual')">
+                            ✏️ Ввести вручную
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Выбор из базы данных -->
+                <div id="database-selection" class="database-selection" style="display:none;">
+                    <div class="filter-section">
+                        <h3>🎯 Выберите категорию:</h3>
+                        <div id="categories-container" class="options-grid">
+                            <!-- Категории загрузятся динамически -->
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>🔤 Выберите буквы (для словарных слов):</h3>
+                        <div class="letter-selection-controls">
+                            <button class="btn btn-info btn-sm" onclick="selectAllLetters()">Выбрать все</button>
+                            <button class="btn btn-secondary btn-sm" onclick="deselectAllLetters()">Снять выбор</button>
+                        </div>
+                        <div id="letters-container" class="letters-grid">
+                            <!-- Буквы загрузятся динамически -->
+                        </div>
+                    </div>
+
+                    <div class="selected-info" id="selected-info">
+                        <p>📊 Выбрано слов: <strong id="selected-count">0</strong></p>
+                    </div>
+                </div>
+
+                <!-- Ручной ввод -->
+                <div id="manual-input" class="manual-input">
+                    <div class="instruction" id="instruction-text">
+                        <strong>Инструкция:</strong> Введите русские слова (по одному на строку).
+                        Система озвучит каждое слово, а вы должны правильно написать его.
+                    </div>
+
+                    <textarea id="words-textarea" placeholder="Введите слова здесь...">вокзал
+парашют
+аккомпанемент
+бюллетень
+деревня
+интеллигент
+профессия
+коллектив
+территория
+дискуссия</textarea>
+                </div>
+
                 <div class="mode-selector">
                     <h3>Выберите режим тренировки:</h3>
                     <div class="mode-option selected" onclick="selectMode('ru_only', this)">
@@ -363,21 +534,7 @@
                     </div>
                 </div>
 
-                <div class="instruction" id="instruction-text">
-                    <strong>Инструкция:</strong> Введите русские слова (по одному на строку).
-                    Система озвучит каждое слово, а вы должны правильно написать его.
                 </div>
-
-                <textarea id="words-textarea" placeholder="Введите слова здесь...">вокзал
-парашют
-аккомпанемент
-бюллетень
-деревня
-интеллигент
-профессия
-коллектив
-территория
-дискуссия</textarea>
 
                 <div class="button-group">
                     <button class="btn btn-primary" onclick="startTraining()">▶️ Начать тренировку</button>
@@ -446,6 +603,263 @@
     <script>
         let currentMode = 'ru_only';
         let isPlaying = false;
+        let selectedSource = 'database';
+        let selectedCategories = [];
+        let selectedLetters = [];
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            selectSource('database');
+            loadCategories();
+        });
+
+        function selectSource(source) {
+            selectedSource = source;
+
+            const dbBtn = document.getElementById('db-source-btn');
+            const manualBtn = document.getElementById('manual-source-btn');
+            const dbSelection = document.getElementById('database-selection');
+            const manualInput = document.getElementById('manual-input');
+
+            if (source === 'database') {
+                dbBtn.className = 'btn btn-primary';
+                manualBtn.className = 'btn btn-secondary';
+                dbSelection.style.display = 'block';
+                manualInput.style.display = 'none';
+            } else {
+                dbBtn.className = 'btn btn-secondary';
+                manualBtn.className = 'btn btn-primary';
+                dbSelection.style.display = 'none';
+                manualInput.style.display = 'block';
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/get_categories');
+                const data = await response.json();
+
+                if (data.success) {
+                    const container = document.getElementById('categories-container');
+                    container.innerHTML = data.categories.map(cat => `
+                        <div class="option-card" onclick="toggleCategory(${cat.id}, this)">
+                            <input type="checkbox" id="cat-${cat.id}" onchange="event.stopPropagation(); toggleCategory(${cat.id}, this.parentElement)">
+                            <label for="cat-${cat.id}" onclick="event.stopPropagation()">
+                                ${cat.name}
+                                ${cat.description ? `<br><small>${cat.description}</small>` : ''}
+                            </label>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки категорий:', error);
+            }
+        }
+
+        async function loadLetters(categoryId = null) {
+            try {
+                const url = categoryId ? `/api/get_letters?category_id=${categoryId}` : '/api/get_letters';
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    const container = document.getElementById('letters-container');
+                    container.innerHTML = data.letters
+                        .filter(letter => letter.count > 0)
+                        .map(letter => `
+                            <div class="letter-card" onclick="toggleLetter(${letter.id}, this)">
+                                ${letter.letter}
+                                <span class="count">(${letter.count})</span>
+                            </div>
+                        `).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки букв:', error);
+            }
+        }
+
+        function toggleCategory(categoryId, element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('selected');
+
+            if (checkbox.checked) {
+                selectedCategories.push(categoryId);
+            } else {
+                selectedCategories = selectedCategories.filter(id => id !== categoryId);
+            }
+
+            // Перезагружаем буквы для выбранных категорий
+            if (selectedCategories.length > 0) {
+                loadLetters(selectedCategories[0]);
+            } else {
+                loadLetters();
+            }
+
+            updateSelectedCount();
+        }
+
+        function toggleLetter(letterId, element) {
+            element.classList.toggle('selected');
+
+            if (element.classList.contains('selected')) {
+                selectedLetters.push(letterId);
+            } else {
+                selectedLetters = selectedLetters.filter(id => id !== letterId);
+            }
+
+            updateSelectedCount();
+        }
+
+        function selectAllLetters() {
+            const letterCards = document.querySelectorAll('.letter-card');
+            selectedLetters = [];
+            letterCards.forEach(card => {
+                card.classList.add('selected');
+                const onClick = card.getAttribute('onclick');
+                const letterId = parseInt(onClick.match(/\d+/)[0]);
+                selectedLetters.push(letterId);
+            });
+            updateSelectedCount();
+        }
+
+        function deselectAllLetters() {
+            const letterCards = document.querySelectorAll('.letter-card');
+            letterCards.forEach(card => card.classList.remove('selected'));
+            selectedLetters = [];
+            updateSelectedCount();
+        }
+
+        async function updateSelectedCount() {
+            // Здесь можно сделать запрос к API для подсчета слов
+            // Пока просто показываем количество выбранных фильтров
+            const count = selectedCategories.length > 0 || selectedLetters.length > 0 ? '?' : '0';
+            document.getElementById('selected-count').textContent = count;
+        }
+
+        function selectSource(source) {
+            selectedSource = source;
+
+            const dbBtn = document.getElementById('db-source-btn');
+            const manualBtn = document.getElementById('manual-source-btn');
+            const dbSelection = document.getElementById('database-selection');
+            const manualInput = document.getElementById('manual-input');
+
+            if (source === 'database') {
+                dbBtn.className = 'btn btn-primary';
+                manualBtn.className = 'btn btn-secondary';
+                dbSelection.style.display = 'block';
+                manualInput.style.display = 'none';
+            } else {
+                dbBtn.className = 'btn btn-secondary';
+                manualBtn.className = 'btn btn-primary';
+                dbSelection.style.display = 'none';
+                manualInput.style.display = 'block';
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/get_categories');
+                const data = await response.json();
+
+                if (data.success) {
+                    const container = document.getElementById('categories-container');
+                    container.innerHTML = data.categories.map(cat => `
+                        <div class="option-card" onclick="toggleCategory(${cat.id}, this)">
+                            <input type="checkbox" id="cat-${cat.id}" onchange="event.stopPropagation(); toggleCategory(${cat.id}, this.parentElement)">
+                            <label for="cat-${cat.id}" onclick="event.stopPropagation()">
+                                ${cat.name}
+                                ${cat.description ? `<br><small>${cat.description}</small>` : ''}
+                            </label>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки категорий:', error);
+            }
+        }
+
+        async function loadLetters(categoryId = null) {
+            try {
+                const url = categoryId ? `/api/get_letters?category_id=${categoryId}` : '/api/get_letters';
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    const container = document.getElementById('letters-container');
+                    container.innerHTML = data.letters
+                        .filter(letter => letter.count > 0)
+                        .map(letter => `
+                            <div class="letter-card" onclick="toggleLetter(${letter.id}, this)">
+                                ${letter.letter}
+                                <span class="count">(${letter.count})</span>
+                            </div>
+                        `).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки букв:', error);
+            }
+        }
+
+        function toggleCategory(categoryId, element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('selected');
+
+            if (checkbox.checked) {
+                selectedCategories.push(categoryId);
+            } else {
+                selectedCategories = selectedCategories.filter(id => id !== categoryId);
+            }
+
+            // Перезагружаем буквы для выбранных категорий
+            if (selectedCategories.length > 0) {
+                loadLetters(selectedCategories[0]);
+            } else {
+                loadLetters();
+            }
+
+            updateSelectedCount();
+        }
+
+        function toggleLetter(letterId, element) {
+            element.classList.toggle('selected');
+
+            if (element.classList.contains('selected')) {
+                selectedLetters.push(letterId);
+            } else {
+                selectedLetters = selectedLetters.filter(id => id !== letterId);
+            }
+
+            updateSelectedCount();
+        }
+
+        function selectAllLetters() {
+            const letterCards = document.querySelectorAll('.letter-card');
+            selectedLetters = [];
+            letterCards.forEach(card => {
+                card.classList.add('selected');
+                const onClick = card.getAttribute('onclick');
+                const letterId = parseInt(onClick.match(/\d+/)[0]);
+                selectedLetters.push(letterId);
+            });
+            updateSelectedCount();
+        }
+
+        function deselectAllLetters() {
+            const letterCards = document.querySelectorAll('.letter-card');
+            letterCards.forEach(card => card.classList.remove('selected'));
+            selectedLetters = [];
+            updateSelectedCount();
+        }
+
+        async function updateSelectedCount() {
+            // Здесь можно сделать запрос к API для подсчета слов
+            // Пока просто показываем количество выбранных фильтров
+            const count = selectedCategories.length > 0 || selectedLetters.length > 0 ? '?' : '0';
+            document.getElementById('selected-count').textContent = count;
+        }
 
         function selectMode(mode, element) {
             currentMode = mode;
@@ -490,37 +904,73 @@
         }
 
         async function startTraining() {
-            const wordsText = document.getElementById('words-textarea').value;
-
-            if (!wordsText.trim()) {
-                alert('Пожалуйста, введите слова!');
-                return;
-            }
-
-            document.getElementById('loading').classList.add('active');
-
-            try {
-                const response = await fetch('/api/save_words', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        words: wordsText,
-                        mode: currentMode
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    await loadCurrentWord();
-                    showSection('training-section');
-                } else {
-                    alert('Ошибка: ' + data.error);
+            if (selectedSource === 'database') {
+                // Работа с базой данных
+                if (selectedCategories.length === 0 && selectedLetters.length === 0) {
+                    alert('Пожалуйста, выберите хотя бы одну категорию или букву!');
+                    return;
                 }
-            } catch (error) {
-                alert('Ошибка при сохранении слов: ' + error);
-            } finally {
-                document.getElementById('loading').classList.remove('active');
+
+                document.getElementById('loading').classList.add('active');
+
+                try {
+                    const response = await fetch('/api/get_words_from_db', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            category_ids: selectedCategories,
+                            letter_ids: selectedLetters,
+                            mode: currentMode
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        await loadCurrentWord();
+                        showSection('training-section');
+                    } else {
+                        alert('Ошибка: ' + data.error);
+                    }
+                } catch (error) {
+                    alert('Ошибка при загрузке слов: ' + error);
+                } finally {
+                    document.getElementById('loading').classList.remove('active');
+                }
+            } else {
+                // Ручной ввод слов
+                const wordsText = document.getElementById('words-textarea').value;
+
+                if (!wordsText.trim()) {
+                    alert('Пожалуйста, введите слова!');
+                    return;
+                }
+
+                document.getElementById('loading').classList.add('active');
+
+                try {
+                    const response = await fetch('/api/save_words', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            words: wordsText,
+                            mode: currentMode
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        await loadCurrentWord();
+                        showSection('training-section');
+                    } else {
+                        alert('Ошибка: ' + data.error);
+                    }
+                } catch (error) {
+                    alert('Ошибка при сохранении слов: ' + error);
+                } finally {
+                    document.getElementById('loading').classList.remove('active');
+                }
             }
         }
 
