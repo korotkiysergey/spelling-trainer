@@ -66,6 +66,29 @@ def api_get_letters():
         return jsonify({'success': False, 'error': str(e)})
 
 
+@app.route('/api/count_words', methods=['POST'])
+def count_words():
+    """Подсчет количества слов по фильтрам"""
+    try:
+        data = request.json
+        category_ids = data.get('category_ids', [])
+        mode = data.get('mode', 'ru_only')
+
+        # Получаем слова из БД
+        words = get_words_by_filters(category_ids, None)
+
+        # Фильтруем слова с переводом для режимов перевода
+        if mode != 'ru_only':
+            words = [w for w in words if w['english_word']]
+
+        return jsonify({
+            'success': True,
+            'count': len(words)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+
 @app.route('/api/get_words_from_db', methods=['POST'])
 def get_words_from_db():
     """Получение слов из БД по фильтрам"""
@@ -392,4 +415,8 @@ def make_safe_filename(word):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(
+        debug=True,
+        host='0.0.0.0',
+        port=5000
+    )
