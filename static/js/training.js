@@ -29,6 +29,7 @@ async function startTraining() {
             const data = await response.json();
 
             if (data.success) {
+                updateModeHint();
                 await loadCurrentWord();
                 showSection('training-section');
             } else {
@@ -63,6 +64,7 @@ async function startTraining() {
             const data = await response.json();
 
             if (data.success) {
+                updateModeHint();
                 await loadCurrentWord();
                 showSection('training-section');
             } else {
@@ -73,6 +75,19 @@ async function startTraining() {
         } finally {
             document.getElementById('loading').classList.remove('active');
         }
+    }
+}
+
+// Обновление подсказки в зависимости от режима
+function updateModeHint() {
+    const hintElement = document.getElementById('mode-hint');
+
+    if (currentMode === 'ru_only') {
+        hintElement.textContent = '📝 Прослушайте русское слово и напишите его';
+    } else if (currentMode === 'ru_to_en') {
+        hintElement.textContent = '🇷🇺→🇬🇧 Видите русское слово → напишите перевод на английском';
+    } else {
+        hintElement.textContent = '🇬🇧→🇷🇺 Видите английское слово → напишите перевод на русском';
     }
 }
 
@@ -90,7 +105,15 @@ async function loadCurrentWord() {
         document.getElementById('progress-info').textContent =
             `Слово ${data.current_index + 1} из ${data.total_words}`;
 
-        document.getElementById('word-display').textContent = '???';
+        // Для режимов с переводом показываем слово, которое произносится
+        // Для режима "только русские" - показываем ???
+        if (currentMode === 'ru_only') {
+            document.getElementById('word-display').textContent = '???';
+        } else {
+            // Показываем слово, которое будет произнесено
+            document.getElementById('word-display').textContent = data.speak_word;
+        }
+
         document.getElementById('answer-input').value = '';
         document.getElementById('result-message').textContent = '';
         document.getElementById('result-message').className = 'result-message';
@@ -182,9 +205,15 @@ async function checkAnswer() {
             resultMsg.className = 'result-message incorrect';
         }
 
+        // Обновляем отображение слова в зависимости от режима
         if (currentMode === 'ru_only') {
+            // Для режима "только русские" показываем само слово
             wordDisplay.textContent = data.correct_word;
+        } else if (currentMode === 'ru_to_en') {
+            // Для ru→en показываем: русское → английское
+            wordDisplay.textContent = `${data.heard_word} → ${data.correct_word}`;
         } else {
+            // Для en→ru показываем: английское → русское
             wordDisplay.textContent = `${data.heard_word} → ${data.correct_word}`;
         }
 

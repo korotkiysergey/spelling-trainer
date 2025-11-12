@@ -155,6 +155,15 @@ textarea:focus {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #667eea;
+}
+
+.mode-hint {
+    font-size: 1em;
+    color: #6c757d;
+    font-style: italic;
+    margin: 10px 0;
+    text-align: center;
 }
 
 .answer-input {
