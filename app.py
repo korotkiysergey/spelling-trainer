@@ -1,3 +1,5 @@
+# https://spelling-trainer.onrender.com/
+
 from flask import Flask, render_template, request, jsonify, session, send_file
 from gtts import gTTS
 import os
@@ -9,6 +11,26 @@ from database import (
     init_database, get_categories, get_letters,
     get_words_by_filters, get_words_count_by_letter
 )
+
+import time
+from functools import wraps
+
+def retry_on_429(max_retries=3, base_delay=1):
+    """Декоратор для повторных попыток при ошибке 429"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if "429" in str(e) and attempt < max_retries - 1:
+                        delay = base_delay * (2 ** attempt)  # экспоненциальная задержка
+                        time.sleep(delay)
+                        continue
+                    raise
+        return wrapper
+    return decorator
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -169,9 +191,15 @@ def save_words():
         return jsonify({'success': False, 'error': str(e)})
 
 
+@retry_on_429()
+def generate_audio_file(word, lang, filepath):
+    """Генерация аудио с обработкой 429"""
+    tts = gTTS(text=word, lang=lang)
+    tts.save(filepath)
+
+
 @app.route('/api/generate_audio', methods=['POST'])
 def generate_audio():
-    """Генерация аудиофайла для слова"""
     try:
         data = request.json
         word = data.get('word', '')
@@ -180,31 +208,28 @@ def generate_audio():
         if not word:
             return jsonify({'success': False, 'error': 'Слово не указано'})
 
-        # Создаем безопасное имя файла
         safe_filename = make_safe_filename(word)
         filename = f"{safe_filename}_{lang}.mp3"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-        # Если файл уже существует, возвращаем его
+        # Проверяем кэш
         if os.path.exists(filepath):
-            return jsonify({
-                'success': True,
-                'audio_url': f'/audio/{filename}'
-            })
+            return jsonify({'success': True, 'audio_url': f'/audio/{filename}'})
 
-        # Генерируем аудио
-        tts = gTTS(text=word, lang=lang)
-        tts.save(filepath)
+        # Генерируем с задержкой между запросами
+        time.sleep(0.5)  # пауза 500мс между запросами
+        generate_audio_file(word, lang, filepath)
 
-        return jsonify({
-            'success': True,
-            'audio_url': f'/audio/{filename}'
-        })
+        return jsonify({'success': True, 'audio_url': f'/audio/{filename}'})
+
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        })
+        error_msg = str(e)
+        if "429" in error_msg:
+            return jsonify({
+                'success': False,
+                'error': 'Превышен лимит запросов к TTS. Попробуйте позже или используйте кэшированные слова.'
+            })
+        return jsonify({'success': False, 'error': error_msg})
 
 
 @app.route('/audio/<filename>')
