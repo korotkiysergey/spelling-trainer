@@ -85,9 +85,9 @@ function updateModeHint() {
     if (currentMode === 'ru_only') {
         hintElement.textContent = '📝 Прослушайте русское слово и напишите его';
     } else if (currentMode === 'ru_to_en') {
-        hintElement.textContent = '🇷🇺→🇬🇧 Видите русское слово → напишите перевод на английском';
+        hintElement.textContent = '🇷🇺→🇬🇧 Нажмите "Прослушать слово", чтобы услышать русское слово → напишите перевод на английском';
     } else {
-        hintElement.textContent = '🇬🇧→🇷🇺 Видите английское слово → напишите перевод на русском';
+        hintElement.textContent = '🇬🇧→🇷🇺 Нажмите "Прослушать слово", чтобы услышать английское слово → напишите перевод на русском';
     }
 }
 
@@ -127,7 +127,10 @@ async function loadCurrentWord() {
             nextBtn.className = 'btn btn-primary';
         }
 
-        await speakWord();
+        // Автоматически озвучиваем только в режиме "только русские"
+        if (currentMode === 'ru_only') {
+            await speakWord();
+        }
 
     } catch (error) {
         alert('Ошибка загрузки слова: ' + error);
@@ -162,11 +165,13 @@ async function speakWord() {
             await audio.play();
             audio.onended = () => { isPlaying = false; };
         } else {
+            console.error('Ошибка генерации аудио:', audioData.error);
             alert('Ошибка генерации аудио: ' + audioData.error);
             isPlaying = false;
         }
     } catch (error) {
-        alert('Ошибка воспроизведения: ' + error);
+        console.error('Ошибка воспроизведения:', error);
+        alert('Ошибка воспроизведения: ' + error.message || error);
         isPlaying = false;
     }
 }
