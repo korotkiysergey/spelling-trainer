@@ -3,9 +3,7 @@
 from flask import Flask, render_template, request, jsonify, session, send_file
 from gtts import gTTS
 import os
-import json
 import random
-from datetime import datetime
 import secrets
 from database import (
     init_database, get_categories, get_letters,
