@@ -312,7 +312,7 @@ def check_answer():
             correct_word = russian_word
             heard_word = english_word
 
-        is_correct = user_answer.lower() == correct_word.lower()
+        is_correct = user_answer == correct_word
 
         # Обновляем статистику
         stats = session['stats']
