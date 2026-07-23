@@ -3,7 +3,6 @@
 """
 Скрипт для заполнения базы данных неправильными глаголами
 Глаголы разбиты по группам по принципу схожести форм
-Источник группировки: https://poliglot16.ru/zapominit-nepravilnye-glagoly/po-grupam/
 """
 
 from database import (
@@ -25,7 +24,7 @@ def populate_irregular_verbs():
     verbs_1 = [
         ('begin', 'began', 'begun', 'начинать'),
         ('drink', 'drank', 'drunk', 'пить'),
-        ('run', 'ran', 'run', 'звонить, звенеть'),
+        ('run', 'ran', 'run', 'бежать'),
         ('sing', 'sang', 'sung', 'петь')
     ]
     for v in verbs_1:
@@ -83,7 +82,89 @@ def populate_irregular_verbs():
     for v in verbs_4:
         add_irregular_verb(*v, group_name=podtip_4)
 
+    podtip_5 = 'Класс 4. (feed → fed → fed)'
+    add_irregular_verb_group(podtip_5, 'Вторая и третья формы совпадают (feed → fed → fed)' , sort_order=5)
 
+    verbs_5 = [
+            ('feed', 'fed', 'fed', 'кормить'),
+            ('lead', 'led', 'led', 'вести, руководить'),
+            ('meet', 'met', 'met', 'встречать'),
+            ('read', 'read', 'read', 'читать'),
+            ('hold', 'held', 'held', 'держать')
+
+    ]
+    for v in verbs_5:
+        add_irregular_verb(*v, group_name=podtip_5)
+
+
+    podtip_6 = 'Класс 5. (shake → shook → shaken)'
+    add_irregular_verb_group(podtip_6, 'Чередование гласных: a/i → o/e → en/n (shake → shook → shaken)' , sort_order=6)
+
+    verbs_6 = [
+            ('break', 'broke', 'broken', 'ломать'),
+            ('choose', 'chose', 'chosen', 'выбирать'),
+            ('shake', 'shook', 'shaken', 'трясти, качать'),
+            ('speak', 'spoke', 'spoken', 'говорить'),
+            ('steal', 'stole', 'stolen', 'красть, воровать'),
+            ('take', 'took', 'taken', 'брать, взять'),
+            ('wake', 'woke', 'woken', 'просыпаться, будить')
+    ]
+    for v in verbs_6:
+        add_irregular_verb(*v, group_name=podtip_6)
+
+    podtip_7 = 'Класс 6. (eat → ate → eaten)'
+    add_irregular_verb_group(podtip_7, 'Чередование гласных: a/i → o/e → en/n (eat → ate → eaten)' , sort_order=7)
+
+    verbs_7 = [
+        ('eat', 'ate', 'eaten', 'есть, кушать'),
+        ('bite', 'bit', 'bitten', 'кусать'),
+        ('write', 'wrote', 'written', 'писать')
+    ]
+    for v in verbs_7:
+        add_irregular_verb(*v, group_name=podtip_7)
+
+    podtip_8 = 'Класс 7. (grow → grew → grown)'
+    add_irregular_verb_group(podtip_8, 'Чередование гласных: a/i → o/e → en/n (grow → grew → grown)' , sort_order=8)
+
+    verbs_8 = [
+            ('fly', 'flew', 'flown', 'летать'),
+            ('grow', 'grew', 'grown', 'расти, выращивать'),
+            ('know', 'knew', 'known', 'знать')
+    ]
+    for v in verbs_8:
+        add_irregular_verb(*v, group_name=podtip_8)
+
+    podtip_9 = 'Класс 8. (sell → sold → sold)'
+    add_irregular_verb_group(podtip_9, 'Чередование гласных: a/i → o/e → en/n (sell → sold → sold)' , sort_order=9)
+
+    verbs_9 = [
+            ('sell', 'sold', 'sold', 'продавать'),
+            ('tell', 'told', 'told', 'говорить, рассказывать')
+    ]
+    for v in verbs_9:
+        add_irregular_verb(*v, group_name=podtip_9)
+
+    podtip_10 = 'Глаголы не изменяющие форму'
+    add_irregular_verb_group(podtip_10, 'Глаголы не изменяющие форму' , sort_order=10)
+
+    verbs_10 = [
+            ('set', 'set', 'set', 'устанавливать, задавать'),
+            ('cost', 'cost', 'cost', 'стоить'),
+            ('put', 'put', 'put', 'класть, ставить'),
+            ('cut', 'cut', 'cut', 'резать')
+    ]
+    for v in verbs_10:
+        add_irregular_verb(*v, group_name=podtip_10)
+
+    podtip_11 = 'Глаголы с изменяющимся корнем'
+    add_irregular_verb_group(podtip_11, 'Глаголы с изменяющимся корнем' , sort_order=11)
+
+    verbs_11 = [
+        ('be', 'was/were', 'been', 'быть, являться'),
+        ('go', 'went', 'gone', 'идти, ехать')
+    ]
+    for v in verbs_11:
+        add_irregular_verb(*v, group_name=podtip_11)
 
     # # =========================================================
     # # ГРУППА 1: Все три формы одинаковы (A-A-A)
