@@ -13,69 +13,78 @@
             <p>Улучшайте свою грамотность играючи!</p>
         </div>
 
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('spelling-tab', this)">
+                📝 Словарные слова
+            </button>
+            <button class="tab-btn" onclick="switchTab('verbs-tab', this)">
+                🔤 Неправильные глаголы
+            </button>
+        </div>
+
         <div class="content">
-            <!-- Секция настройки -->
-            <div id="setup-section" class="section active">
-                <h2>⚙️ Настройка тренировки</h2>
 
-                <!-- Выбор режима тренировки -->
-                <div class="mode-selector">
-                    <h3>Выберите режим тренировки:</h3>
-                    <div class="mode-option selected" onclick="selectMode('ru_only', this)">
-                        <input type="radio" name="mode" value="ru_only" id="mode-ru-only" checked>
-                        <label for="mode-ru-only">📝 Только русские слова (слышу русское, пишу русское)</label>
-                    </div>
-                    <div class="mode-option" onclick="selectMode('ru_to_en', this)">
-                        <input type="radio" name="mode" value="ru_to_en" id="mode-ru-to-en">
-                        <label for="mode-ru-to-en">🇷🇺→🇬🇧 Русский → Английский (слышу русское, пишу английское)</label>
-                    </div>
-                    <div class="mode-option" onclick="selectMode('en_to_ru', this)">
-                        <input type="radio" name="mode" value="en_to_ru" id="mode-en-to-ru">
-                        <label for="mode-en-to-ru">🇬🇧→🇷🇺 Английский → Русский (слышу английское, пишу русское)</label>
-                    </div>
-                </div>
+            <!-- ==================== ВКЛАДКА: СЛОВАРНЫЕ СЛОВА ==================== -->
+            <div id="spelling-tab" class="tab-content active">
 
-                <!-- Выбор источника слов -->
-                <div class="source-selector">
-                    <h3>Выберите источник слов:</h3>
-                    <div class="button-group">
-                        <button class="btn btn-primary" id="db-source-btn" onclick="selectSource('database')">
-                            📚 Из базы данных
-                        </button>
-                        <button class="btn btn-secondary" id="manual-source-btn" onclick="selectSource('manual')">
-                            ✏️ Ввести вручную
-                        </button>
-                    </div>
-                </div>
+                <!-- Секция настройки -->
+                <div id="setup-section" class="section active">
+                    <h2>⚙️ Настройка тренировки</h2>
 
-                <!-- Выбор из базы данных -->
-                <div id="database-selection" class="database-selection" style="display:none;">
-                    <div class="filter-section">
-                        <h3 id="categories-title">🎯 Выберите категорию:</h3>
-                        <div id="categories-container" class="options-grid"></div>
-                    </div>
-
-                    <div class="filter-section" id="letters-section" style="display:none;">
-                        <h3>🔤 Выберите буквы (для словарных слов):</h3>
-                        <div class="letter-selection-controls">
-                            <button class="btn btn-info btn-sm" onclick="selectAllLetters()">Выбрать все</button>
-                            <button class="btn btn-secondary btn-sm" onclick="deselectAllLetters()">Снять выбор</button>
+                    <div class="mode-selector">
+                        <h3>Выберите режим тренировки:</h3>
+                        <div class="mode-option selected" onclick="selectMode('ru_only', this)">
+                            <input type="radio" name="mode" value="ru_only" id="mode-ru-only" checked>
+                            <label for="mode-ru-only">📝 Только русские слова (слышу русское, пишу русское)</label>
                         </div>
-                        <div id="letters-container" class="letters-grid"></div>
+                        <div class="mode-option" onclick="selectMode('ru_to_en', this)">
+                            <input type="radio" name="mode" value="ru_to_en" id="mode-ru-to-en">
+                            <label for="mode-ru-to-en">🇷🇺→🇬🇧 Русский → Английский (слышу русское, пишу английское)</label>
+                        </div>
+                        <div class="mode-option" onclick="selectMode('en_to_ru', this)">
+                            <input type="radio" name="mode" value="en_to_ru" id="mode-en-to-ru">
+                            <label for="mode-en-to-ru">🇬🇧→🇷🇺 Английский → Русский (слышу английское, пишу русское)</label>
+                        </div>
                     </div>
 
-                    <div class="selected-info" id="selected-info">
-                        <p>📊 Выбрано слов: <strong id="selected-count">0</strong></p>
+                    <div class="source-selector">
+                        <h3>Выберите источник слов:</h3>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="db-source-btn" onclick="selectSource('database')">
+                                📚 Из базы данных
+                            </button>
+                            <button class="btn btn-secondary" id="manual-source-btn" onclick="selectSource('manual')">
+                                ✏️ Ввести вручную
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Ручной ввод -->
-                <div id="manual-input" class="manual-input">
-                    <div class="instruction" id="instruction-text">
-                        <strong>Инструкция:</strong> Введите русские слова (по одному на строку).
-                        Система озвучит каждое слово, а вы должны правильно написать его.
+                    <div id="database-selection" class="database-selection" style="display:none;">
+                        <div class="filter-section">
+                            <h3 id="categories-title">🎯 Выберите категорию:</h3>
+                            <div id="categories-container" class="options-grid"></div>
+                        </div>
+
+                        <div class="filter-section" id="letters-section" style="display:none;">
+                            <h3>🔤 Выберите буквы (для словарных слов):</h3>
+                            <div class="letter-selection-controls">
+                                <button class="btn btn-info btn-sm" onclick="selectAllLetters()">Выбрать все</button>
+                                <button class="btn btn-secondary btn-sm" onclick="deselectAllLetters()">Снять выбор</button>
+                            </div>
+                            <div id="letters-container" class="letters-grid"></div>
+                        </div>
+
+                        <div class="selected-info" id="selected-info">
+                            <p>📊 Выбрано слов: <strong id="selected-count">0</strong></p>
+                        </div>
                     </div>
-                    <textarea id="words-textarea" placeholder="Введите слова здесь...">вокзал
+
+                    <div id="manual-input" class="manual-input">
+                        <div class="instruction" id="instruction-text">
+                            <strong>Инструкция:</strong> Введите русские слова (по одному на строку).
+                        </div>
+                        <textarea id="words-textarea" placeholder="Введите слова здесь...">вокзал
 парашют
 аккомпанемент
 бюллетень
@@ -85,75 +94,250 @@
 коллектив
 территория
 дискуссия</textarea>
-                </div>
-
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="startTraining()">▶️ Начать тренировку</button>
-                </div>
-
-                <div id="loading" class="loading">
-                    <div class="spinner"></div>
-                    <p>Подготовка аудиофайлов...</p>
-                </div>
-            </div>
-
-            <!-- Секция тренировки -->
-            <div id="training-section" class="section">
-                <button class="btn btn-secondary" onclick="backToSetup()">← Назад к настройкам</button>
-
-                <div class="training-area">
-                    <div class="progress-info" id="progress-info">Слово 1 из 10</div>
-                    <div class="word-display" id="word-display">???</div>
-                    <div id="mode-hint" class="mode-hint">Прослушайте слово и напишите его</div>
-                    <input type="text" id="answer-input" class="answer-input" placeholder="Введите слово..." onkeypress="handleEnter(event)">
-                    <div class="result-message" id="result-message"></div>
-
-                    <div class="button-group">
-                        <button class="btn btn-info" onclick="speakWord()">🔊 Прослушать слово</button>
-                        <button class="btn btn-primary" id="next-btn" onclick="checkAnswer()">➡️ Следующее слово</button>
-                    </div>
-
-                    <div class="stats-box">
-                        <h3>📊 Статистика текущей сессии</h3>
-                        <div id="stats-display">
-                            <p>Всего попыток: <strong id="total-attempts">0</strong></p>
-                            <p>Правильных ответов: <strong id="correct-answers">0</strong> (<span id="percentage">0</span>%)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Секция результатов -->
-            <div id="results-section" class="section">
-                <div class="results-container">
-                    <h2>🎉 Результаты тренировки</h2>
-                    <div class="grade-display" id="grade-display">5</div>
-                    <div id="results-stats"></div>
-
-                    <div class="results-grid">
-                        <div class="results-column">
-                            <h3>❌ Неправильно написанные слова</h3>
-                            <div id="incorrect-words"></div>
-                        </div>
-                        <div class="results-column">
-                            <h3>✅ Правильно написанные слова</h3>
-                            <div id="correct-words"></div>
-                        </div>
                     </div>
 
                     <div class="button-group">
-                        <button class="btn btn-primary" onclick="retryTraining()">🔄 Повторить тренировку</button>
-                        <button class="btn btn-success" onclick="backToSetup()">✓ Завершить</button>
+                        <button class="btn btn-primary" onclick="startTraining()">▶️ Начать тренировку</button>
+                    </div>
+
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>Подготовка...</p>
                     </div>
                 </div>
-            </div>
-        </div>
+
+                <!-- Секция тренировки -->
+                <div id="training-section" class="section">
+                    <button class="btn btn-secondary" onclick="backToSetup()">← Назад к настройкам</button>
+
+                    <div class="training-area">
+                        <div class="progress-info" id="progress-info">Слово 1 из 10</div>
+                        <div class="word-display" id="word-display">???</div>
+                        <div id="mode-hint" class="mode-hint">Прослушайте слово и напишите его</div>
+                        <input type="text" id="answer-input" class="answer-input" placeholder="Введите слово..." onkeypress="handleEnter(event)">
+                        <div class="result-message" id="result-message"></div>
+
+                        <div class="button-group">
+                            <button class="btn btn-info" onclick="speakWord()">🔊 Прослушать слово</button>
+                            <button class="btn btn-primary" id="next-btn" onclick="checkAnswer()">➡️ Следующее слово</button>
+                        </div>
+
+                        <div class="stats-box">
+                            <h3>📊 Статистика текущей сессии</h3>
+                            <div id="stats-display">
+                                <p>Всего попыток: <strong id="total-attempts">0</strong></p>
+                                <p>Правильных ответов: <strong id="correct-answers">0</strong> (<span id="percentage">0</span>%)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Секция результатов -->
+                <div id="results-section" class="section">
+                    <div class="results-container">
+                        <h2>🎉 Результаты тренировки</h2>
+                        <div class="grade-display" id="grade-display">5</div>
+                        <div id="results-stats"></div>
+
+                        <div class="results-grid">
+                            <div class="results-column">
+                                <h3>❌ Неправильно написанные слова</h3>
+                                <div id="incorrect-words"></div>
+                            </div>
+                            <div class="results-column">
+                                <h3>✅ Правильно написанные слова</h3>
+                                <div id="correct-words"></div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="retryTraining()">🔄 Повторить тренировку</button>
+                            <button class="btn btn-success" onclick="backToSetup()">✓ Завершить</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /spelling-tab -->
+
+
+            <!-- ==================== ВКЛАДКА: НЕПРАВИЛЬНЫЕ ГЛАГОЛЫ ==================== -->
+            <div id="verbs-tab" class="tab-content">
+
+                <!-- Настройка -->
+                <div id="verb-setup-section" class="verb-section active">
+                    <h2>⚙️ Тренировка неправильных глаголов</h2>
+
+                    <!-- Режим тренировки -->
+                    <div class="mode-selector">
+                        <h3>Выберите режим:</h3>
+                        <div class="mode-option verb-mode-option selected" onclick="selectVerbMode('translation_to_forms', this)">
+                            <span class="mode-icon">🇷🇺 → ABC</span>
+                            <label>
+                                <strong>По переводу — три формы</strong><br>
+                                <small>Показывается перевод на русском, вы пишете все три формы глагола</small>
+                            </label>
+                        </div>
+                        <div class="mode-option verb-mode-option" onclick="selectVerbMode('form_to_rest', this)">
+                            <span class="mode-icon">1 → 2+3</span>
+                            <label>
+                                <strong>По одной форме — остальные + перевод</strong><br>
+                                <small>Показывается одна случайная форма, вы пишете оставшиеся формы и перевод</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Выбор групп -->
+                    <div class="filter-section">
+                        <h3>📂 Выберите группы глаголов:</h3>
+                        <div class="letter-selection-controls">
+                            <button class="btn btn-info btn-sm" onclick="selectAllVerbGroups()">Выбрать все</button>
+                            <button class="btn btn-secondary btn-sm" onclick="deselectAllVerbGroups()">Снять выбор</button>
+                        </div>
+                        <div id="verb-groups-container" class="options-grid verb-groups-grid"></div>
+                    </div>
+
+                    <div class="selected-info">
+                        <p>📊 Выбрано глаголов: <strong id="selected-verbs-count">0</strong></p>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="startVerbTraining()">▶️ Начать тренировку</button>
+                    </div>
+
+                    <div id="verb-loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>Подготовка...</p>
+                    </div>
+                </div>
+
+                <!-- Тренировка -->
+                <div id="verb-training-section" class="verb-section">
+                    <button class="btn btn-secondary" onclick="backToVerbSetup()">← Назад к настройкам</button>
+
+                    <div class="training-area">
+                        <div class="progress-info" id="verb-progress-info">Глагол 1 из 10</div>
+
+                        <!-- Карточка с показываемой формой -->
+                        <div class="verb-show-card">
+                            <div class="verb-show-label" id="verb-show-label">Перевод:</div>
+                            <div class="verb-show-value" id="verb-show-value">—</div>
+                            <span class="verb-group-badge" id="verb-group-badge"></span>
+                        </div>
+
+                        <!-- Поля ввода трёх форм + перевод -->
+                        <div class="verb-inputs-grid">
+
+                            <div class="verb-input-row" id="verb-row-form1">
+                                <label class="verb-input-label">Форма 1 <small>(Infinitive)</small></label>
+                                <div class="verb-input-wrap">
+                                    <input type="text" id="verb-input-form1"
+                                           class="verb-form-input"
+                                           placeholder="e.g. go"
+                                           onkeydown="handleVerbEnter(event)">
+                                    <span class="verb-hint" id="verb-hint-form1"></span>
+                                </div>
+                            </div>
+
+                            <div class="verb-input-row" id="verb-row-form2">
+                                <label class="verb-input-label">Форма 2 <small>(Past Simple)</small></label>
+                                <div class="verb-input-wrap">
+                                    <input type="text" id="verb-input-form2"
+                                           class="verb-form-input"
+                                           placeholder="e.g. went"
+                                           onkeydown="handleVerbEnter(event)">
+                                    <span class="verb-hint" id="verb-hint-form2"></span>
+                                </div>
+                            </div>
+
+                            <div class="verb-input-row" id="verb-row-form3">
+                                <label class="verb-input-label">Форма 3 <small>(Past Participle)</small></label>
+                                <div class="verb-input-wrap">
+                                    <input type="text" id="verb-input-form3"
+                                           class="verb-form-input"
+                                           placeholder="e.g. gone"
+                                           onkeydown="handleVerbEnter(event)">
+                                    <span class="verb-hint" id="verb-hint-form3"></span>
+                                </div>
+                            </div>
+
+                            <div class="verb-input-row" id="verb-row-translation" style="display:none;">
+                                <label class="verb-input-label">Перевод <small>(на русском)</small></label>
+                                <div class="verb-input-wrap">
+                                    <input type="text" id="verb-input-translation"
+                                           class="verb-form-input"
+                                           placeholder="e.g. идти, ехать"
+                                           onkeydown="handleVerbEnter(event)">
+                                    <span class="verb-hint" id="verb-hint-translation"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="verb-result-message" id="verb-result-message"></div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="verb-check-btn" onclick="checkVerbAnswer()">
+                                ✔️ Проверить
+                            </button>
+                            <button class="btn btn-primary" id="verb-next-btn" onclick="loadCurrentVerb()">
+                                ➡️ Следующий глагол
+                            </button>
+                        </div>
+
+                        <div class="stats-box">
+                            <h3>📊 Статистика</h3>
+                            <p>Всего попыток: <strong id="verb-total-attempts">0</strong></p>
+                            <p>Правильных: <strong id="verb-correct-answers">0</strong> (<span id="verb-percentage">0</span>%)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Результаты -->
+                <div id="verb-results-section" class="verb-section">
+                    <div class="results-container">
+                        <h2>🎉 Результаты тренировки глаголов</h2>
+                        <div class="grade-display" id="verb-grade-display">5</div>
+                        <div id="verb-results-stats"></div>
+
+                        <div class="results-grid">
+                            <div class="results-column">
+                                <h3>❌ Ошибки</h3>
+                                <div id="verb-incorrect-list"></div>
+                            </div>
+                            <div class="results-column">
+                                <h3>✅ Верно</h3>
+                                <div id="verb-correct-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="retryVerbTraining()">🔄 Повторить</button>
+                            <button class="btn btn-success" onclick="backToVerbSetup()">✓ Завершить</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /verbs-tab -->
+
+        </div><!-- /content -->
     </div>
 
     <audio id="audio-player" style="display: none;"></audio>
 
-    <!-- Подключение JavaScript файлов -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/training.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/verbs.js') }}"></script>
+    <script>
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if (tabId === 'verbs-tab') {
+                initVerbsTab();
+            }
+        }
+    </script>
 </body>
 </html>

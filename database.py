@@ -61,9 +61,130 @@ def init_database():
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_words_letter ON words(letter_id)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_words_russian ON words(russian_word)')
 
+        # =============================================
+        # Таблица групп неправильных глаголов
+        # =============================================
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS irregular_verb_groups (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                description TEXT,
+                sort_order INTEGER DEFAULT 0
+            )
+        ''')
+
+        # =============================================
+        # Таблица неправильных глаголов
+        # =============================================
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS irregular_verbs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                form1 TEXT NOT NULL,
+                form2 TEXT NOT NULL,
+                form3 TEXT NOT NULL,
+                translation TEXT NOT NULL,
+                group_id INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (group_id) REFERENCES irregular_verb_groups(id)
+            )
+        ''')
+
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_verbs_group ON irregular_verbs(group_id)')
+
         conn.commit()
         print("✅ База данных успешно инициализирована!")
 
+
+# =============================================
+# Функции для неправильных глаголов
+# =============================================
+
+def add_irregular_verb_group(name, description='', sort_order=0):
+    """Добавление группы неправильных глаголов"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute(
+                'INSERT INTO irregular_verb_groups (name, description, sort_order) VALUES (?, ?, ?)',
+                (name, description, sort_order)
+            )
+            conn.commit()
+            return cursor.lastrowid
+        except sqlite3.IntegrityError:
+            cursor.execute('SELECT id FROM irregular_verb_groups WHERE name = ?', (name,))
+            return cursor.fetchone()[0]
+
+
+def add_irregular_verb(form1, form2, form3, translation, group_name=None):
+    """Добавление неправильного глагола"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+
+        group_id = None
+        if group_name:
+            cursor.execute('SELECT id FROM irregular_verb_groups WHERE name = ?', (group_name,))
+            result = cursor.fetchone()
+            if result:
+                group_id = result[0]
+
+        cursor.execute('''
+            INSERT INTO irregular_verbs (form1, form2, form3, translation, group_id)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (form1, form2, form3, translation, group_id))
+
+        conn.commit()
+        return cursor.lastrowid
+
+
+def get_irregular_verb_groups():
+    """Получение всех групп неправильных глаголов с количеством глаголов"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT g.*, COUNT(v.id) as verb_count
+            FROM irregular_verb_groups g
+            LEFT JOIN irregular_verbs v ON g.id = v.group_id
+            GROUP BY g.id
+            ORDER BY g.sort_order, g.name
+        ''')
+        return [dict(row) for row in cursor.fetchall()]
+
+
+def get_irregular_verbs_by_groups(group_ids=None):
+    """Получение неправильных глаголов по группам"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        query = '''
+            SELECT v.*, g.name as group_name
+            FROM irregular_verbs v
+            LEFT JOIN irregular_verb_groups g ON v.group_id = g.id
+            WHERE 1=1
+        '''
+        params = []
+
+        if group_ids:
+            placeholders = ','.join('?' * len(group_ids))
+            query += f' AND v.group_id IN ({placeholders})'
+            params.extend(group_ids)
+
+        query += ' ORDER BY g.sort_order, v.form1'
+        cursor.execute(query, params)
+        return [dict(row) for row in cursor.fetchall()]
+
+
+def delete_all_irregular_verbs():
+    """Удаление всех неправильных глаголов"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM irregular_verbs')
+        cursor.execute('DELETE FROM irregular_verb_groups')
+        conn.commit()
+        print("✅ Все неправильные глаголы удалены")
+
+
+# =============================================
+# Оригинальные функции
+# =============================================
 
 def add_category(name, description='', category_type='class'):
     """Добавление категории"""
@@ -105,11 +226,9 @@ def add_word(russian_word, english_word=None, category_name=None, difficulty=1):
     with get_db() as conn:
         cursor = conn.cursor()
 
-        # Определяем букву
         first_letter = russian_word[0].upper()
         letter_id = add_letter(first_letter)
 
-        # Получаем category_id если указана категория
         category_id = None
         if category_name:
             cursor.execute('SELECT id FROM categories WHERE name = ?', (category_name,))
@@ -228,16 +347,23 @@ def get_database_stats():
         cursor.execute('SELECT COUNT(*) FROM words WHERE english_word IS NOT NULL')
         translations_count = cursor.fetchone()[0]
 
+        cursor.execute('SELECT COUNT(*) FROM irregular_verbs')
+        verbs_count = cursor.fetchone()[0]
+
+        cursor.execute('SELECT COUNT(*) FROM irregular_verb_groups')
+        verb_groups_count = cursor.fetchone()[0]
+
         return {
             'categories': categories_count,
             'letters': letters_count,
             'total_words': words_count,
-            'with_translation': translations_count
+            'with_translation': translations_count,
+            'irregular_verbs': verbs_count,
+            'irregular_verb_groups': verb_groups_count,
         }
 
 
 if __name__ == '__main__':
-    # Инициализация БД
     init_database()
     stats = get_database_stats()
     print(f"\n📊 Статистика базы данных:")
@@ -245,3 +371,5 @@ if __name__ == '__main__':
     print(f"Букв: {stats['letters']}")
     print(f"Всего слов: {stats['total_words']}")
     print(f"С переводом: {stats['with_translation']}")
+    print(f"Неправильных глаголов: {stats['irregular_verbs']}")
+    print(f"Групп глаголов: {stats['irregular_verb_groups']}")
