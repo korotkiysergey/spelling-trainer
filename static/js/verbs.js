@@ -148,7 +148,8 @@ async function loadCurrentVerb() {
         // Показываем слово/подсказку
         document.getElementById('verb-show-label').textContent = data.show_label + ':';
         document.getElementById('verb-show-value').textContent = data.show;
-        document.getElementById('verb-group-badge').textContent = data.group_name || '';
+        const badge = document.getElementById('verb-group-badge');
+        if (badge) badge.textContent = data.group_name || '';
 
         // Сбрасываем все поля ввода
         ['verb-input-form1', 'verb-input-form2', 'verb-input-form3', 'verb-input-translation'].forEach(id => {
